@@ -1,9 +1,26 @@
 package main
 
 import (
-	"fmt"
+	"country-rest-api/config"
+	"country-rest-api/handler"
+	"log"
+	"net/http"
+	"os"
 )
 
 func main() {
-	fmt.Println("Hello, world!")
+
+	// Handle port assignment based on environment variable, or local override.
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Println("$PORT has not been set. Default: 8080")
+		port = "8080"
+	}
+
+	// Set up handlers for all endpoints.
+	http.HandleFunc(config.DEFAULT_PATH, handler.EmptyHandler)
+
+	// Start server
+	log.Println("Starting server on port " + port + " ...")
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
