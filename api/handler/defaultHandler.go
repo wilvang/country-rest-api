@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"country-rest-api/config"
+	"country-rest-api/internal/constants"
 	"fmt"
 	"net/http"
 )
@@ -16,9 +16,9 @@ func EmptyHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Offer information for redirection to paths
 	output := "This service does not provide any functionality on root path level. Please use paths" +
-		" <a href=\"" + config.InfoPath + "\">" + config.InfoPath + "</a> or " +
-		" or <a href=\"" + config.PopulationPath + "\">" + config.PopulationPath + "</a>" +
-		" or <a href=\"" + config.StatusPath + "\">" + config.StatusPath + "</a>."
+		" <a href=\"" + constants.InfoPath + "\">" + constants.InfoPath + "</a> or " +
+		" or <a href=\"" + constants.PopulationPath + "\">" + constants.PopulationPath + "</a>" +
+		" or <a href=\"" + constants.StatusPath + "\">" + constants.StatusPath + "</a>."
 
 	// Write output to client
 	_, err := fmt.Fprintf(w, "%v", output)
