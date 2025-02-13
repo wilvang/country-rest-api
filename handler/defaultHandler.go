@@ -16,9 +16,9 @@ func EmptyHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Offer information for redirection to paths
 	output := "This service does not provide any functionality on root path level. Please use paths" +
-		" <a href=\"" + config.INFO_PATH + "\">" + config.INFO_PATH + "</a> or " +
-		" or <a href=\"" + config.POPULATION_PATH + "\">" + config.POPULATION_PATH + "</a>" +
-		" or <a href=\"" + config.STATUS_PATH + "\">" + config.STATUS_PATH + "</a>."
+		" <a href=\"" + config.InfoPath + "\">" + config.InfoPath + "</a> or " +
+		" or <a href=\"" + config.PopulationPath + "\">" + config.PopulationPath + "</a>" +
+		" or <a href=\"" + config.StatusPath + "\">" + config.StatusPath + "</a>."
 
 	// Write output to client
 	_, err := fmt.Fprintf(w, "%v", output)

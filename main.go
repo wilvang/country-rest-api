@@ -18,8 +18,8 @@ func main() {
 	}
 
 	// Set up handlers for all endpoints.
-	http.HandleFunc(config.DEFAULT_PATH, handler.EmptyHandler)
-	http.HandleFunc(config.INFO_PATH, handler.InfoHandler)
+	http.HandleFunc(config.DefaultPath, handler.EmptyHandler)
+	http.HandleFunc(config.InfoPath, handler.InfoHandler)
 
 	// Start server
 	log.Println("Starting server on port " + port + " ...")
