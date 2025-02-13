@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"country-rest-api/api/router"
 )
 
 func main() {
-	fmt.Println("Hello, world!")
+	router.StartServer()
 }
