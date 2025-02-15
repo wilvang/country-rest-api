@@ -38,7 +38,7 @@ func handleGetRequest(w http.ResponseWriter, r *http.Request) {
 	country, err := service.RequestInfoService(param, limit)
 	if err != nil {
 		http.Error(w, "Error during decoding: "+err.Error(), http.StatusBadRequest)
-		return // Add return to stop further execution
+		return
 	}
 
 	// Pretty-print the JSON response
@@ -48,8 +48,8 @@ func handleGetRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return the JSON response
+	// Set the content type and status code before writing the response body
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(output)
 	w.WriteHeader(http.StatusOK)
+	w.Write(output)
 }
