@@ -20,9 +20,9 @@ type Country struct {
 	// Flag is the URL or path to the country's flag image.
 	Flag string `json:"flag.png"`
 
-	// Capital is the name of the capital city of the country.
+	// Capitals is the name of the capital city of the country.
 	Capitals []string `json:"capital"`
 
-	// Cities is a list of all cities in the country.
+	// Cities is a list of cities in the country.
 	Cities []string `json:"cities"`
 }
