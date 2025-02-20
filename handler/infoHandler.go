@@ -3,6 +3,7 @@ package handler
 import (
 	"country-rest-api/constants"
 	"country-rest-api/internal/service/info"
+	"country-rest-api/util"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -36,12 +37,12 @@ func handleStatusRequest(w http.ResponseWriter, r *http.Request) {
 	limit := queryParams.Get("limit")
 
 	// Call the service to get the country information
-	country, err := info.RequestInfoService(param, limit)
-	if err != nil {
-		http.Error(w, "Error during decoding: "+err.Error(), http.StatusBadRequest)
+	country := info.RequestInfoService(param, limit, r)
+	if util.IsEmpty(country) {
+		http.Error(w, "Error during fetching of data", http.StatusInternalServerError)
 		return
 	}
-
+	
 	// Pretty-print the JSON response
 	output, err2 := json.MarshalIndent(country, "", "  ")
 	if err2 != nil {

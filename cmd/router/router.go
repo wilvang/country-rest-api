@@ -18,7 +18,7 @@ func StartServer() {
 	if port == "" {
 		// If not set, defaults to port 8080.
 		log.Println("$port has not been set. Default: 8080")
-		port = "8083"
+		port = "8080"
 	}
 
 	// Creates a new HTTP request multiplexer (router) to handle incoming requests

@@ -3,31 +3,34 @@ package restCountries
 import (
 	"context"
 	"country-rest-api/constants"
-	"fmt"
+	"country-rest-api/external/models/restCounties/response"
+	"country-rest-api/util"
 	"io"
 	"log"
 	"net/http"
 	"time"
 )
 
-func RequestStatus(url string, r *http.Request) string {
+func RequestInfo(url string, r *http.Request) response.CountryResponse {
+	countryResponse := response.CountryResponse{}
 
-	url = "https://countriesnow.space/api/v0.1/countries/iso"
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodHead, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		log.Printf(constants.ErrorCreateRequest, err)
-		return fmt.Sprintf("Status Code: %d", http.StatusBadRequest)
+		return countryResponse
 	}
+	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	resp, err2 := client.Do(req)
 	if err2 != nil {
 		log.Printf(constants.ErrorResponse, err2)
-		return fmt.Sprintf("Status Code: %d", http.StatusInternalServerError)
+		return countryResponse
 	}
+
 	defer func(Body io.ReadCloser) {
 		err3 := Body.Close()
 		if err3 != nil {
@@ -35,5 +38,13 @@ func RequestStatus(url string, r *http.Request) string {
 		}
 	}(resp.Body)
 
-	return fmt.Sprintf("Status Code: %d", resp.StatusCode)
+	body, err3 := io.ReadAll(resp.Body)
+	if err3 != nil {
+		log.Printf(constants.ErrorReadBody, err3)
+		return countryResponse
+	}
+
+	util.DecodeJSONBody(body, &countryResponse)
+
+	return countryResponse
 }

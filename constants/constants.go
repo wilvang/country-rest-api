@@ -7,6 +7,7 @@ const (
 	// Iso2 is the placeholder used for inserting the two-letter country code in the URL.
 	Iso2 = "{two_letter_country_code}"
 
+	// InfoFilter filters to only receive the necessary fields from the RESTCountriesAPI
 	InfoFilter = "?fields=name,continents,population,languages,borders,flags,capital"
 )
 
@@ -36,13 +37,17 @@ const (
 
 // External endpoints
 const (
-	// CountriesNowAPI endpoint for the Countries Now service.
+	// CountriesNowAPI is the endpoint for the Countries Now service.
 	CountriesNowAPI = "http://129.241.150.113:3500/api/v0.1/"
 
+	// CountriesNowStatus is the endpoint for retrieving country ISO codes from the Countries Now service.
 	CountriesNowStatus = CountriesNowAPI + "countries/iso"
 
-	// RESTCountriesAPI endpoint for the REST Countries service.
+	CountriesNowInfo = CountriesNowAPI + "countries/cities"
+
+	// RESTCountriesAPI is the endpoint for the REST Countries service.
 	RESTCountriesAPI = "http://129.241.150.113:8080/v3.1/"
 
+	// RESTCountriesStatus is the endpoint for retrieving the capital of Norway from the REST Countries service.
 	RESTCountriesStatus = RESTCountriesAPI + "alpha/no?filter=capital"
 )
