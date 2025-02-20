@@ -6,7 +6,6 @@ import (
 	"country-rest-api/external/models/countriesNow/request"
 	"country-rest-api/external/models/countriesNow/response"
 	"country-rest-api/util"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -22,9 +21,6 @@ func RequestInfo(country string, r *http.Request) []string {
 
 	jsonBody := util.EncodeJSONBody(request.PostRequestBody{Name: country})
 
-	fmt.Println(request.PostRequestBody{Name: country})
-
-	fmt.Println(jsonBody)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, constants.CountriesNowAPI+"countries/cities", jsonBody)
 	if err != nil {
 		log.Printf(constants.ErrorCreateRequest, err)
@@ -38,8 +34,6 @@ func RequestInfo(country string, r *http.Request) []string {
 		log.Printf(constants.ErrorResponse, err2)
 		return make([]string, 0)
 	}
-
-	fmt.Println(resp.Body)
 
 	defer func(Body io.ReadCloser) {
 		err3 := Body.Close()
@@ -55,7 +49,6 @@ func RequestInfo(country string, r *http.Request) []string {
 	}
 
 	util.DecodeJSONBody(body, &cityResponse)
-	fmt.Println(cityResponse)
 
 	return cityResponse.Data
 }
