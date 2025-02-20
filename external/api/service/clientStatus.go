@@ -12,7 +12,6 @@ import (
 
 func RequestStatus(url string, r *http.Request) string {
 
-	url = "https://countriesnow.space/api/v0.1/countries/iso"
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 

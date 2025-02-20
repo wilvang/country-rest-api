@@ -39,7 +39,7 @@ const (
 	// CountriesNowAPI endpoint for the Countries Now service.
 	CountriesNowAPI = "http://129.241.150.113:3500/api/v0.1/"
 
-	CountriesNowStatus = CountriesNowAPI + "country/iso"
+	CountriesNowStatus = CountriesNowAPI + "countries/iso"
 
 	// RESTCountriesAPI endpoint for the REST Countries service.
 	RESTCountriesAPI = "http://129.241.150.113:8080/v3.1/"
