@@ -2,7 +2,7 @@ package handler
 
 import (
 	"country-rest-api/constants"
-	"country-rest-api/external/api/service/info"
+	"country-rest-api/internal/service/info"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -15,7 +15,8 @@ func InfoHandler(w http.ResponseWriter, r *http.Request) {
 	// Selects the appropriate function for the HTTP request.
 	switch r.Method {
 	case http.MethodGet:
-		handleGetRequest(w, r)
+		handleStatusRequest(w, r)
+		break
 	default:
 		http.Error(w, "REST Method '"+r.Method+"' not supported. Currently only '"+
 			http.MethodGet+"' is supported.", http.StatusNotImplemented)
@@ -26,7 +27,7 @@ func InfoHandler(w http.ResponseWriter, r *http.Request) {
 // handleGetRequest processes GET requests to retrieve country information.
 // It extracts the path parameter and query parameters, calls the service to get the country data,
 // and returns the data in JSON format. If an error occurs, it returns an appropriate HTTP error response.
-func handleGetRequest(w http.ResponseWriter, r *http.Request) {
+func handleStatusRequest(w http.ResponseWriter, r *http.Request) {
 	// Extract path parameter
 	param := strings.TrimPrefix(r.URL.Path, constants.InfoPath)
 

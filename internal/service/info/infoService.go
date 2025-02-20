@@ -3,9 +3,9 @@ package info
 import (
 	"bytes"
 	"country-rest-api/constants"
-	external "country-rest-api/external/models"
-	"country-rest-api/internal/models/countriesNow/request"
-	"country-rest-api/internal/models/countriesNow/response"
+	"country-rest-api/external/models/countriesNow/request"
+	"country-rest-api/external/models/countriesNow/response"
+	external "country-rest-api/internal/models"
 	"country-rest-api/util/json"
 	"encoding/json"
 	"fmt"
@@ -16,11 +16,10 @@ import (
 )
 
 // RequestInfoService sends an HTTP GET request to the REST Countries API to retrieve information
-// about a country specified by the 'param' parameter. It returns a Info struct with the decoded
+// about a country specified by the 'param' parameter. It returns an Info struct with the decoded
 // data or an error if the request or decoding fails.
 func RequestInfoService(param string, limit string) (external.Info, error) {
-	filter := "?fields=name,continents,population,languages,borders,flags,capital"
-	url := constants.RESTCountriesAPI + "alpha/" + param + filter
+	url := constants.RESTCountriesAPI + "alpha/" + param + constants.InfoFilter
 
 	r, err0 := http.NewRequest(http.MethodGet, url, nil)
 	if err0 != nil {

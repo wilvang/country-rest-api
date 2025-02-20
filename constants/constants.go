@@ -1,50 +1,48 @@
 package constants
 
+import "time"
+
+// Path variables
 const (
-	// PathValue represents the key for a two-letter country code in a URL path.
-	PathValue = "two_letter_country_code"
+	// Iso2 is the placeholder used for inserting the two-letter country code in the URL.
+	Iso2 = "{two_letter_country_code}"
 
-	// PathParam represents the query parameter key for limiting the number of results.
-	PathParam = "limit"
-
-	// CountryCodePlaceholder is the placeholder used for inserting the two-letter country code in the URL.
-	CountryCodePlaceholder = "{two_letter_country_code}"
-
-	// LimitByCity represents a query parameter to limit the results by city.
-	LimitByCity = "?limit={limit}"
-
-	// LimitByYear represents a query parameter to limit the results by a range of years (startYear-endYear).
-	LimitByYear = "{?limit={:startYear-endYear}}"
+	InfoFilter = "?fields=name,continents,population,languages,borders,flags,capital"
 )
 
+// StartTime  represents the time when the webserver started.
+var StartTime time.Time
+
+// Internal endpoints
 const (
+	// RootPath is the root endpoint of the API.
+	RootPath = "/"
+
+	// Version is the current version of the API.
+	Version = "v1"
+
 	// DefaultPath for guiding the user to the correct path.
-	DefaultPath = "/"
+	DefaultPath = RootPath + "countryinfo/" + Version
 
 	// InfoPath for retrieving country information.
-	InfoPath = "/countryinfo/v1/info/"
+	InfoPath = DefaultPath + "/info/"
 
 	// PopulationPath for retrieving population records for a country.
-	PopulationPath = "/countryinfo/v1/population/"
+	PopulationPath = DefaultPath + "/population/"
 
 	// StatusPath for checking the uptime of the services.
-	StatusPath = "/countryinfo/v1/status/"
+	StatusPath = DefaultPath + "/status/"
 )
 
+// External endpoints
 const (
 	// CountriesNowAPI endpoint for the Countries Now service.
 	CountriesNowAPI = "http://129.241.150.113:3500/api/v0.1/"
 
+	CountriesNowStatus = CountriesNowAPI + "country/iso"
+
 	// RESTCountriesAPI endpoint for the REST Countries service.
 	RESTCountriesAPI = "http://129.241.150.113:8080/v3.1/"
-)
 
-const (
-	ErrorStatusCode    = "error: received status code %d"
-	ErrorCloseBody     = "error closing response body: %v"
-	ErrorReadBody      = "error reading response body: %v"
-	ErrorDecodeJSON    = "error decoding JSON: %v"
-	ErrorEncodeJSON    = "error encoding JSON: %v"
-	ErrorCreateRequest = "error in creating request: %v"
-	ErrorResponse      = "error in response: %v"
+	RESTCountriesStatus = RESTCountriesAPI + "alpha/no?filter=capital"
 )
