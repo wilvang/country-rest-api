@@ -1,10 +1,12 @@
-package service
+package info
 
 import (
 	"bytes"
-	"country-rest-api/internal/constants"
-	"country-rest-api/internal/models"
-	jsonutil "country-rest-api/internal/util/json"
+	"country-rest-api/constants"
+	external "country-rest-api/external/models"
+	"country-rest-api/internal/models/countriesNow/request"
+	"country-rest-api/internal/models/countriesNow/response"
+	"country-rest-api/util/json"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,15 +16,15 @@ import (
 )
 
 // RequestInfoService sends an HTTP GET request to the REST Countries API to retrieve information
-// about a country specified by the 'param' parameter. It returns a Country struct with the decoded
+// about a country specified by the 'param' parameter. It returns a Info struct with the decoded
 // data or an error if the request or decoding fails.
-func RequestInfoService(param string, limit string) (models.Country, error) {
+func RequestInfoService(param string, limit string) (external.Info, error) {
 	filter := "?fields=name,continents,population,languages,borders,flags,capital"
 	url := constants.RESTCountriesAPI + "alpha/" + param + filter
 
-	r, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return models.Country{}, fmt.Errorf(constants.ErrorCreateRequest, err)
+	r, err0 := http.NewRequest(http.MethodGet, url, nil)
+	if err0 != nil {
+		return external.Info{}, fmt.Errorf(constants.ErrorCreateRequest, err0)
 	}
 
 	r.Header.Add("content-type", "application/json")
@@ -32,53 +34,53 @@ func RequestInfoService(param string, limit string) (models.Country, error) {
 	defer client.CloseIdleConnections()
 
 	// Issue request
-	res, err := client.Do(r)
-	if err != nil {
-		return models.Country{}, fmt.Errorf(constants.ErrorResponse, err)
+	res, err1 := client.Do(r)
+	if err1 != nil {
+		return external.Info{}, fmt.Errorf(constants.ErrorResponse, err1)
 	}
 
 	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Printf(constants.ErrorCloseBody, err)
+		err2 := Body.Close()
+		if err2 != nil {
+			log.Printf(constants.ErrorCloseBody, err2)
 		}
 	}(res.Body)
 
 	// Check if the response status is not OK
 	if res.StatusCode != http.StatusOK {
-		return models.Country{}, fmt.Errorf(constants.ErrorStatusCode, res.StatusCode)
+		return external.Info{}, fmt.Errorf(constants.ErrorStatusCode, res.StatusCode)
 	}
 
 	// Read the response body
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return models.Country{}, fmt.Errorf("error reading response body: %v", err)
+	body, err3 := io.ReadAll(res.Body)
+	if err3 != nil {
+		return external.Info{}, fmt.Errorf("error reading response body: %v", err3)
 	}
 
-	country := models.Country{}
+	country := external.Info{}
 
-	// Decode the JSON data into the Country struct
-	err = jsonutil.DecodeJSONBody(io.NopCloser(bytes.NewReader(body)), &country)
-	if err != nil {
-		return country, err
+	// Decode the JSON data into the Info struct
+	err4 := jsonutil.DecodeJSONBody(io.NopCloser(bytes.NewReader(body)), &country)
+	if err4 != nil {
+		return country, err4
 	}
 
 	// Updates the struct with the nested fields
-	err = extractNestedFields(body, &country)
-	if err != nil {
-		return country, err
+	err5 := extractNestedFields(body, &country)
+	if err5 != nil {
+		return country, err5
 	}
 
-	err = requestCities(&country, limit)
-	if err != nil {
-		return country, err
+	err6 := requestCities(&country, limit)
+	if err6 != nil {
+		return country, err6
 	}
 
 	return country, nil
 }
 
 // extractNestedFields extracts the nested fields 'name' and 'flag' from the JSON response body.
-func extractNestedFields(body []byte, country *models.Country) error {
+func extractNestedFields(body []byte, country *external.Info) error {
 	// Unmarshal JSON into a map
 	var result map[string]interface{}
 	err := json.Unmarshal(body, &result)
@@ -95,24 +97,24 @@ func extractNestedFields(body []byte, country *models.Country) error {
 
 // requestCities sends an HTTP POST request to the CountriesNow API to retrieve a list of cities
 // for the specified country. It returns a slice of city names or an error if the request or decoding fails.
-func requestCities(country *models.Country, limit string) error {
+func requestCities(country *external.Info, limit string) error {
 	url := constants.CountriesNowAPI + "countries/cities"
 
-	cityResponse := models.CityResponse{
+	cityResponse := response.CityResponse{
 		Error: true,
 		Msg:   "",
 		Data:  make([]string, 0),
 	}
 
 	// Create instance of content
-	jsonBody, err := jsonutil.EncodeJSONBody(models.CityRequest{Name: country.Country})
-	if err != nil {
-		return err
+	jsonBody, err0 := jsonutil.EncodeJSONBody(request.PostRequestBody{Name: country.Country})
+	if err0 != nil {
+		return err0
 	}
 
-	r, err := http.NewRequest(http.MethodPost, url, jsonBody)
-	if err != nil {
-		return fmt.Errorf(constants.ErrorCreateRequest, err)
+	r, err1 := http.NewRequest(http.MethodPost, url, jsonBody)
+	if err1 != nil {
+		return fmt.Errorf(constants.ErrorCreateRequest, err1)
 	}
 	r.Header.Set("Content-Type", "application/json")
 
@@ -121,15 +123,15 @@ func requestCities(country *models.Country, limit string) error {
 	defer client.CloseIdleConnections()
 
 	// Issue request
-	res, err := client.Do(r)
-	if err != nil {
-		return fmt.Errorf(constants.ErrorResponse, err)
+	res, err2 := client.Do(r)
+	if err2 != nil {
+		return fmt.Errorf(constants.ErrorResponse, err2)
 	}
 
 	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Printf(constants.ErrorCloseBody, err)
+		err3 := Body.Close()
+		if err3 != nil {
+			log.Printf(constants.ErrorCloseBody, err3)
 		}
 	}(res.Body)
 
@@ -140,13 +142,13 @@ func requestCities(country *models.Country, limit string) error {
 	}
 
 	// Decode the JSON response body into the cityResponse model
-	err = jsonutil.DecodeJSONBody(res.Body, &cityResponse)
-	if err != nil {
-		return err
+	err4 := jsonutil.DecodeJSONBody(res.Body, &cityResponse)
+	if err4 != nil {
+		return err4
 	}
 
 	// Slices the list of cities to the limit if provided
-	if lim, err := strconv.Atoi(limit); err == nil && lim >= 0 && lim <= len(cityResponse.Data) {
+	if lim, err5 := strconv.Atoi(limit); err5 == nil && lim >= 0 && lim <= len(cityResponse.Data) {
 		country.Cities = cityResponse.Data[:lim]
 	} else {
 		country.Cities = cityResponse.Data

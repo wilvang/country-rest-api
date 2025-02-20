@@ -1,8 +1,8 @@
 package router
 
 import (
-	"country-rest-api/api/handler"
-	"country-rest-api/internal/constants"
+	"country-rest-api/constants"
+	handler2 "country-rest-api/handler"
 	"log"
 	"net/http"
 	"os"
@@ -24,10 +24,10 @@ func StartServer() {
 	router := http.NewServeMux()
 
 	// Registers various route handlers to the router
-	router.HandleFunc(constants.DefaultPath, handler.EmptyHandler)
-	router.HandleFunc(constants.InfoPath+constants.CountryCodePlaceholder, handler.InfoHandler)
-	router.HandleFunc(constants.PopulationPath+constants.CountryCodePlaceholder, handler.PopulationHandler)
-	router.HandleFunc(constants.StatusPath, handler.PopulationHandler)
+	router.HandleFunc(constants.DefaultPath, handler2.EmptyHandler)
+	router.HandleFunc(constants.InfoPath+constants.CountryCodePlaceholder, handler2.InfoHandler)
+	router.HandleFunc(constants.PopulationPath+constants.CountryCodePlaceholder, handler2.PopulationHandler)
+	router.HandleFunc(constants.StatusPath, handler2.PopulationHandler)
 
 	// Starts the HTTP server on the specified port and logs any fatal errors that occur.
 	log.Println("Starting server on port " + port)

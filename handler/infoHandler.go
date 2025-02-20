@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"country-rest-api/internal/constants"
-	"country-rest-api/internal/service"
+	"country-rest-api/constants"
+	"country-rest-api/external/api/service/info"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -35,15 +35,15 @@ func handleGetRequest(w http.ResponseWriter, r *http.Request) {
 	limit := queryParams.Get("limit")
 
 	// Call the service to get the country information
-	country, err := service.RequestInfoService(param, limit)
+	country, err := info.RequestInfoService(param, limit)
 	if err != nil {
 		http.Error(w, "Error during decoding: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// Pretty-print the JSON response
-	output, err := json.MarshalIndent(country, "", "  ")
-	if err != nil {
+	output, err2 := json.MarshalIndent(country, "", "  ")
+	if err2 != nil {
 		http.Error(w, "Error during pretty printing", http.StatusInternalServerError)
 		return
 	}

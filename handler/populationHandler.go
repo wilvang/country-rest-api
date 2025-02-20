@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"country-rest-api/internal/constants"
+	"country-rest-api/constants"
 	"net/http"
 	"strings"
 )

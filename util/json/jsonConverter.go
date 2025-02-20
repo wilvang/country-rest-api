@@ -2,7 +2,7 @@ package jsonutil
 
 import (
 	"bytes"
-	"country-rest-api/internal/constants"
+	"country-rest-api/constants"
 	"encoding/json"
 	"fmt"
 	"io"

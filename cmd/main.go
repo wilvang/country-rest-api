@@ -1,7 +1,7 @@
 package main
 
 import (
-	"country-rest-api/api/router"
+	"country-rest-api/cmd/router"
 )
 
 func main() {
