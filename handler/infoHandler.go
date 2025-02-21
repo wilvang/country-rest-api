@@ -3,6 +3,7 @@ package handler
 import (
 	"country-rest-api/constants"
 	"country-rest-api/internal/service/info"
+	"country-rest-api/internal/service/status"
 	"country-rest-api/util"
 	"encoding/json"
 	"net/http"
@@ -29,8 +30,21 @@ func InfoHandler(w http.ResponseWriter, r *http.Request) {
 // It extracts the path parameter and query parameters, calls the service to get the country data,
 // and returns the data in JSON format. If an error occurs, it returns an appropriate HTTP error response.
 func handleStatusRequest(w http.ResponseWriter, r *http.Request) {
+
 	// Extract path parameter
 	param := strings.TrimPrefix(r.URL.Path, constants.InfoPath)
+	if len(param) != 2 {
+		http.Error(w, "Invalid path-parameter. Remember to use the iso2 for the desired country",
+			http.StatusBadRequest)
+		return
+	}
+
+	// Checks if the external APIs are running
+	serviceStatus := status.RequestStatusService(r)
+	if serviceStatus.CountriesNow != "200" || serviceStatus.RestCountries != "200" {
+		http.Error(w, "Cannot connect to the services", http.StatusInternalServerError)
+		return
+	}
 
 	// Extract query parameters
 	queryParams := r.URL.Query()
@@ -42,7 +56,7 @@ func handleStatusRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error during fetching of data", http.StatusInternalServerError)
 		return
 	}
-	
+
 	// Pretty-print the JSON response
 	output, err2 := json.MarshalIndent(country, "", "  ")
 	if err2 != nil {

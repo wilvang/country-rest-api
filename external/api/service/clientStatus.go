@@ -18,14 +18,14 @@ func RequestStatus(url string, r *http.Request) string {
 	req, err := http.NewRequestWithContext(ctx, http.MethodHead, url, nil)
 	if err != nil {
 		log.Printf(constants.ErrorCreateRequest, err)
-		return fmt.Sprintf("Status Code: %d", http.StatusBadRequest)
+		return fmt.Sprint(http.StatusBadRequest)
 	}
 
 	client := &http.Client{}
 	resp, err2 := client.Do(req)
 	if err2 != nil {
 		log.Printf(constants.ErrorResponse, err2)
-		return fmt.Sprintf("Status Code: %d", http.StatusInternalServerError)
+		return fmt.Sprint(http.StatusInternalServerError)
 	}
 	defer func(Body io.ReadCloser) {
 		err3 := Body.Close()
@@ -34,5 +34,5 @@ func RequestStatus(url string, r *http.Request) string {
 		}
 	}(resp.Body)
 
-	return fmt.Sprintf("Status Code: %d", resp.StatusCode)
+	return fmt.Sprint(resp.StatusCode)
 }

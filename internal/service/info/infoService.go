@@ -10,7 +10,7 @@ import (
 )
 
 // RequestInfoService sends an HTTP GET request to the REST Countries API to retrieve information
-// about a country specified by the 'param' parameter. It returns a Info struct with the decoded
+// about a country specified by the 'param' parameter. It returns an Info struct with the decoded
 // data or an error if the request or decoding fails.
 func RequestInfoService(param string, limit string, r *http.Request) models.Info {
 	url := constants.RESTCountriesAPI + "alpha/" + param + constants.InfoFilter
@@ -31,6 +31,8 @@ func RequestInfoService(param string, limit string, r *http.Request) models.Info
 
 	if lim, err := strconv.Atoi(limit); err == nil && lim >= 0 && lim <= len(cityResponse) {
 		info.Cities = cityResponse[:lim]
+	} else if lim < len(cityResponse) {
+		info.Cities = cityResponse
 	}
 
 	return info
