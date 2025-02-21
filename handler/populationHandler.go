@@ -2,7 +2,9 @@ package handler
 
 import (
 	"country-rest-api/constants"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -37,4 +39,24 @@ func handlePopulationRequest(w http.ResponseWriter, r *http.Request) {
 	response := "Received param: " + param + ", limit: " + limit
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(response))
+}
+
+func PopulationPage(w http.ResponseWriter, r *http.Request) {
+	// Read the HTML file
+	htmlFile, err := os.ReadFile("frontend/population.html")
+	if err != nil {
+		log.Printf("Error writing HTML file to response: %v", err)
+		http.Error(w, "Error reading HTML file", http.StatusInternalServerError)
+		return
+	}
+
+	// Ensure interpretation as HTML by client (browser)
+	w.Header().Set("Content-Type", "text/html")
+
+	// Write the HTML file content to the response
+	_, err2 := w.Write(htmlFile)
+	if err2 != nil {
+		log.Printf("Error writing HTML file to response: %v", err2)
+		http.Error(w, "Error writing HTML file to response", http.StatusInternalServerError)
+	}
 }

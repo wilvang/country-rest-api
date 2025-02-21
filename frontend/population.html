@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Population Information</title>
+</head>
+<body>
+<h1>Population Information</h1>
+<p>To retrieve population information about a country, please add the ISO 3166-2 identifier of the country to the URL path.</p>
+<p>Example: <code>/countryinfo/v1/population/{ISO3166-2}</code></p>
+<p>You can also use the <code>?limit={startYear-endYear}</code> query parameter to specify the range of years (boundary values are included).</p>
+<p>Example: <code>/countryinfo/v1/population/{ISO3166-2}?limit=2000-2020</code></p>
+<p>This will display the population for the country for the specified years and calculate the mean of all the years displayed.</p>
+<p>Available paths:</p>
+<ul>
+  <li><a href="/countryinfo/v1">Home</a></li>
+  <li><a href="/countryinfo/v1/info">Info</a></li>
+  <li><a href="/countryinfo/v1/status">Status</a></li>
+</ul>
+</body>
+</html>

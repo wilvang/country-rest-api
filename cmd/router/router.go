@@ -2,7 +2,7 @@ package router
 
 import (
 	"country-rest-api/constants"
-	handler "country-rest-api/handler"
+	"country-rest-api/handler"
 	"log"
 	"net/http"
 	"os"
@@ -25,9 +25,15 @@ func StartServer() {
 	router := http.NewServeMux()
 
 	// Registers various route handlers to the router
-	router.HandleFunc(constants.DefaultPath, handler.EmptyHandler)
+	router.HandleFunc(constants.DefaultPath, handler.StartPage)
+	router.HandleFunc(constants.RootPath, handler.RedirectHandler)
+
+	router.HandleFunc(constants.InfoPath, handler.InfoPage)
 	router.HandleFunc(constants.InfoPath+constants.Iso2, handler.InfoHandler)
+
+	router.HandleFunc(constants.PopulationPath, handler.PopulationPage)
 	router.HandleFunc(constants.PopulationPath+constants.Iso2, handler.PopulationHandler)
+
 	router.HandleFunc(constants.StatusPath, handler.StatusHandler)
 
 	// Logs when the server was started.

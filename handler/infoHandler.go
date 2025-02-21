@@ -6,7 +6,9 @@ import (
 	"country-rest-api/internal/service/status"
 	"country-rest-api/util"
 	"encoding/json"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -68,4 +70,23 @@ func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(output)
+}
+
+func InfoPage(w http.ResponseWriter, r *http.Request) {
+	// Read the HTML file
+	htmlFile, err := os.ReadFile("frontend/info.html")
+	if err != nil {
+		http.Error(w, "Error reading HTML file", http.StatusInternalServerError)
+		return
+	}
+
+	// Ensure interpretation as HTML by client (browser)
+	w.Header().Set("Content-Type", "text/html")
+
+	// Write the HTML file content to the response
+	_, err2 := w.Write(htmlFile)
+	if err2 != nil {
+		log.Printf("Error writing HTML file to response: %v", err2)
+		http.Error(w, "Error writing HTML file to response", http.StatusInternalServerError)
+	}
 }
