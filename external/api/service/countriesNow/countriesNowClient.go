@@ -3,8 +3,8 @@ package countriesNow
 import (
 	"context"
 	"country-rest-api/constants"
-	"country-rest-api/external/models/countriesNow/request"
-	"country-rest-api/external/models/countriesNow/response"
+	"country-rest-api/models/countriesNow/request"
+	"country-rest-api/models/countriesNow/response"
 	"country-rest-api/util"
 	"io"
 	"log"

@@ -4,7 +4,7 @@ import (
 	"country-rest-api/constants"
 	"country-rest-api/external/api/service/countriesNow"
 	"country-rest-api/external/api/service/restCountries"
-	"country-rest-api/internal/models"
+	"country-rest-api/models"
 	"net/http"
 	"strconv"
 )

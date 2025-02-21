@@ -3,7 +3,7 @@ package restCountries
 import (
 	"context"
 	"country-rest-api/constants"
-	"country-rest-api/external/models/restCounties/response"
+	"country-rest-api/models/restCounties/response"
 	"country-rest-api/util"
 	"io"
 	"log"

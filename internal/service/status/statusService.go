@@ -3,9 +3,9 @@ package status
 import (
 	"country-rest-api/constants"
 	"country-rest-api/external/api/service"
+	"country-rest-api/models"
 	"time"
 
-	"country-rest-api/internal/models"
 	"net/http"
 )
 
