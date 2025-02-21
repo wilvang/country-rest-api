@@ -16,6 +16,7 @@ func RequestInfoService(param string, limit string, r *http.Request) models.Info
 	url := constants.RESTCountriesAPI + "alpha/" + param + constants.InfoFilter
 
 	countryResponse := restCountries.RequestInfo(url, r)
+	cityResponse := countriesNow.RequestInfo(countryResponse.Name.Common, r)
 
 	info := models.Info{
 		Country:    countryResponse.Name.Common,
@@ -25,15 +26,11 @@ func RequestInfoService(param string, limit string, r *http.Request) models.Info
 		Borders:    countryResponse.Borders,
 		Flag:       countryResponse.Flags.Png,
 		Capitals:   countryResponse.Capital,
-		Cities:     nil,
+		Cities:     cityResponse[:10],
 	}
 
-	cityResponse := countriesNow.RequestInfo(info.Country, r)
-
-	if lim, err5 := strconv.Atoi(limit); err5 == nil && lim >= 0 && lim <= len(cityResponse) {
+	if lim, err := strconv.Atoi(limit); err == nil && lim >= 0 && lim <= len(cityResponse) {
 		info.Cities = cityResponse[:lim]
-	} else {
-		info.Cities = cityResponse
 	}
 
 	return info
