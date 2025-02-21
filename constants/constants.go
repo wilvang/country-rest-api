@@ -2,6 +2,9 @@ package constants
 
 import "time"
 
+// StartTime  represents the time when the webserver started.
+var StartTime time.Time
+
 // Path variables
 const (
 	// Iso2 is the placeholder used for inserting the two-letter country code in the URL.
@@ -10,9 +13,6 @@ const (
 	// InfoFilter filters to only receive the necessary fields from the RESTCountriesAPI
 	InfoFilter = "?fields=name,continents,population,languages,borders,flags,capital"
 )
-
-// StartTime  represents the time when the webserver started.
-var StartTime time.Time
 
 // Internal endpoints
 const (

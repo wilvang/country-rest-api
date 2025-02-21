@@ -10,17 +10,23 @@ import (
 	"time"
 )
 
+// RequestStatus sends an HTTP HEAD request to the specified URL to check the status of an external service.
+// It returns the HTTP status code as a string. If an error occurs during the request, it logs the error
+// and returns an appropriate HTTP status code.
 func RequestStatus(url string, r *http.Request) string {
 
+	// Create a context with a timeout to ensure the request does not hang indefinitely
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 
+	// Create a new HTTP request with the specified context
 	req, err := http.NewRequestWithContext(ctx, http.MethodHead, url, nil)
 	if err != nil {
 		log.Printf(constants.ErrorCreateRequest, err)
 		return fmt.Sprint(http.StatusBadRequest)
 	}
 
+	// Send the HTTP request and get the response
 	client := &http.Client{}
 	resp, err2 := client.Do(req)
 	if err2 != nil {
@@ -34,5 +40,6 @@ func RequestStatus(url string, r *http.Request) string {
 		}
 	}(resp.Body)
 
+	// Return the HTTP status code as a string
 	return fmt.Sprint(resp.StatusCode)
 }

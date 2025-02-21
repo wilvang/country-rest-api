@@ -1,7 +1,7 @@
 package constants
 
+// Error messages
 const (
-	ErrorStatusCode    = "error: received status code %d"
 	ErrorCloseBody     = "error closing response body: %v"
 	ErrorReadBody      = "error reading response body: %v"
 	ErrorDecodeJSON    = "error decoding JSON: %v"

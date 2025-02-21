@@ -15,9 +15,12 @@ import (
 func RequestInfoService(param string, limit string, r *http.Request) models.Info {
 	url := constants.RESTCountriesAPI + "alpha/" + param + constants.InfoFilter
 
+	// Send request to REST Countries API and retrieve country information
 	countryResponse := restCountries.RequestInfo(url, r)
+	// Send request to Countries Now API and retrieve city information
 	cityResponse := countriesNow.RequestInfo(countryResponse.Name.Common, r)
 
+	// Populate the Info struct with the retrieved data
 	info := models.Info{
 		Country:    countryResponse.Name.Common,
 		Continents: countryResponse.Continents,
@@ -29,6 +32,7 @@ func RequestInfoService(param string, limit string, r *http.Request) models.Info
 		Cities:     cityResponse[:10],
 	}
 
+	// Adjust the number of cities based on the 'limit' query parameter
 	if lim, err := strconv.Atoi(limit); err == nil && lim >= 0 && lim <= len(cityResponse) {
 		info.Cities = cityResponse[:lim]
 	} else if lim < len(cityResponse) {

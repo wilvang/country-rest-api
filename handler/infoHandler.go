@@ -17,7 +17,7 @@ func InfoHandler(w http.ResponseWriter, r *http.Request) {
 	// Selects the appropriate function for the HTTP request.
 	switch r.Method {
 	case http.MethodGet:
-		handleStatusRequest(w, r)
+		handleInfoRequest(w, r)
 		break
 	default:
 		http.Error(w, "REST Method '"+r.Method+"' not supported. Currently only '"+
@@ -26,10 +26,10 @@ func InfoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleGetRequest processes GET requests to retrieve country information.
+// handleInfoRequest processes GET requests to retrieve country information.
 // It extracts the path parameter and query parameters, calls the service to get the country data,
 // and returns the data in JSON format. If an error occurs, it returns an appropriate HTTP error response.
-func handleStatusRequest(w http.ResponseWriter, r *http.Request) {
+func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 
 	// Extract path parameter
 	param := strings.TrimPrefix(r.URL.Path, constants.InfoPath)
@@ -40,8 +40,8 @@ func handleStatusRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Checks if the external APIs are running
-	serviceStatus := status.RequestStatusService(r)
-	if serviceStatus.CountriesNow != "200" || serviceStatus.RestCountries != "200" {
+	serverStatus := status.RequestStatusService(r)
+	if serverStatus.CountriesNow != "200" || serverStatus.RestCountries != "200" {
 		http.Error(w, "Cannot connect to the services", http.StatusInternalServerError)
 		return
 	}
