@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>General Country Information</title>
+</head>
+<body>
+<h1>General Country Information</h1>
+<p>To retrieve information about a country, please add the ISO 3166-2 identifier of the country to the URL path.</p>
+<p>Example: <code>/countryinfo/v1/info/{ISO2}</code></p>
+<p>You can also use the <code>?limit={0..}</code> query parameter to limit the number of cities displayed (default is 10).</p>
+<p>Example: <code>/countryinfo/v1/info/{ISO2}?limit=5</code></p>
+<p>Available paths:</p>
+<ul>
+  <li><a href="/countryinfo/v1">Home</a></li>
+  <li><a href="/countryinfo/v1/population">Population</a></li>
+  <li><a href="/countryinfo/v1/status">Status</a></li>
+</ul>
+</body>
+</html>
