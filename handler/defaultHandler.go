@@ -15,8 +15,8 @@ func StartPage(w http.ResponseWriter, r *http.Request) {
 	// Read the HTML file
 	htmlFile, err := os.ReadFile("frontend/index.html")
 	if err != nil {
-		log.Printf("Error writing HTML file to response: %v", err)
-		http.Error(w, "Error reading HTML file", http.StatusInternalServerError)
+		log.Printf(constants.ErrorReadingHTML+" %v", err)
+		http.Error(w, constants.ErrorReadingHTML, http.StatusInternalServerError)
 		return
 	}
 
@@ -26,11 +26,14 @@ func StartPage(w http.ResponseWriter, r *http.Request) {
 	// Write the HTML file content to the response
 	_, err2 := w.Write(htmlFile)
 	if err2 != nil {
-		log.Printf("Error writing HTML file to response: %v", err2)
-		http.Error(w, "Error writing HTML file to response", http.StatusInternalServerError)
+		log.Printf(constants.ErrorWritingHTML+" %v", err2)
+		http.Error(w, constants.ErrorWritingHTML, http.StatusInternalServerError)
 	}
 }
 
+// RedirectHandler handles HTTP requests and redirects them to a new URL.
+// w: The HTTP response writer.
+// r: The HTTP request.
 func RedirectHandler(w http.ResponseWriter, r *http.Request) {
 	// Redirect to the new URL
 	http.Redirect(w, r, constants.DefaultPath, http.StatusFound)

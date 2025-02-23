@@ -9,5 +9,5 @@ type Population struct {
 // PopulationData represents population data for a specific year.
 type PopulationData struct {
 	Year  int `json:"year"`
-	Count int `json:"values"`
+	Count int `json:"value"`
 }

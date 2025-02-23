@@ -36,15 +36,14 @@ func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 	// Extract path parameter
 	param := strings.TrimPrefix(r.URL.Path, constants.InfoPath)
 	if len(param) != 2 {
-		http.Error(w, "Invalid path-parameter. Remember to use the iso2 for the desired country",
-			http.StatusBadRequest)
+		http.Error(w, constants.ErrorPathParameter, http.StatusBadRequest)
 		return
 	}
 
 	// Checks if the external APIs are running
 	serverStatus := status.RequestStatusService(r)
 	if serverStatus.CountriesNow != "200" || serverStatus.RestCountries != "200" {
-		http.Error(w, "Cannot connect to the services", http.StatusInternalServerError)
+		http.Error(w, constants.ErrorConnection, http.StatusInternalServerError)
 		return
 	}
 
@@ -60,23 +59,31 @@ func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Pretty-print the JSON response
-	output, err2 := json.MarshalIndent(country, "", "  ")
-	if err2 != nil {
-		http.Error(w, "Error during pretty printing", http.StatusInternalServerError)
+	output, err := json.MarshalIndent(country, "", "  ")
+	if err != nil {
+		http.Error(w, constants.ErrorPrettyPrinting, http.StatusInternalServerError)
 		return
 	}
 
 	// Set the content type and status code before writing the response body
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(output)
+	_, err2 := w.Write(output)
+	if err2 != nil {
+		log.Printf(constants.ErrorWritingJSON+" %v", err2)
+		http.Error(w, constants.ErrorWritingJSON, http.StatusInternalServerError)
+	}
 }
 
+// InfoPage serves the info HTML page.
+// w: The HTTP response writer.
+// r: The HTTP request.
 func InfoPage(w http.ResponseWriter, r *http.Request) {
 	// Read the HTML file
 	htmlFile, err := os.ReadFile("frontend/info.html")
 	if err != nil {
-		http.Error(w, "Error reading HTML file", http.StatusInternalServerError)
+		log.Printf(constants.ErrorReadingHTML+" %v", err)
+		http.Error(w, constants.ErrorReadingHTML, http.StatusInternalServerError)
 		return
 	}
 
@@ -86,7 +93,7 @@ func InfoPage(w http.ResponseWriter, r *http.Request) {
 	// Write the HTML file content to the response
 	_, err2 := w.Write(htmlFile)
 	if err2 != nil {
-		log.Printf("Error writing HTML file to response: %v", err2)
-		http.Error(w, "Error writing HTML file to response", http.StatusInternalServerError)
+		log.Printf(constants.ErrorWritingHTML+" %v", err2)
+		http.Error(w, constants.ErrorWritingHTML, http.StatusInternalServerError)
 	}
 }

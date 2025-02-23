@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"country-rest-api/constants"
 	"country-rest-api/internal/service/status"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -32,12 +34,16 @@ func handleStatusRequest(w http.ResponseWriter, r *http.Request) {
 	// Pretty-print the JSON response
 	output, err := json.MarshalIndent(serverStatus, "", "  ")
 	if err != nil {
-		http.Error(w, "Error during pretty printing", http.StatusInternalServerError)
+		http.Error(w, constants.ErrorPrettyPrinting, http.StatusInternalServerError)
 		return
 	}
 
 	// Set the content type and status code before writing the response body
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(output)
+	_, err2 := w.Write(output)
+	if err2 != nil {
+		log.Printf(constants.ErrorWritingJSON+" %v", err2)
+		http.Error(w, constants.ErrorWritingJSON, http.StatusInternalServerError)
+	}
 }
