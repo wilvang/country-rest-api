@@ -3,6 +3,7 @@ package router
 import (
 	"country-rest-api/constants"
 	"country-rest-api/handler"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
@@ -13,11 +14,17 @@ import (
 // specified port.
 func StartServer() {
 
+	// Loads the .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
 	// Retrieves the port number from the environment variable "port"
-	port := os.Getenv("port")
+	port := os.Getenv("PORT")
 	if port == "" {
 		// If not set, defaults to port 8080.
-		log.Println("$port has not been set. Default: 8080")
+		log.Println("$PORT has not been set. Default: 8080")
 		port = "8080"
 	}
 
