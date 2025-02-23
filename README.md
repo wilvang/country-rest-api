@@ -5,14 +5,15 @@ This project is a REST web application developed in Go that provides information
 ## Installing
 
 Clone the repository and move to the folder.
-Copy `.env.example` to `.env`. This allows you to update environment variables of the program from the files.
 
 ## Dependencies
 
 * go
 * github.com/joho/godotenv
 
-Two external REST web services is used to provide the data:
+Copy `.env.example` to `.env`. This allows you to update environment variables of the program from the files.
+
+### External REST web services
 * *CountriesNow API*
   * Endpoint: http://129.241.150.113:3500/api/v0.1/
   * Documentation: https://documenter.getpostman.com/view/1134062/T1LJjU52
