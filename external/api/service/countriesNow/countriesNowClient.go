@@ -1,62 +1,46 @@
 package countriesNow
 
 import (
-	"context"
 	"country-rest-api/constants"
+	"country-rest-api/external/api/service"
 	"country-rest-api/models/countriesNow/request"
 	"country-rest-api/models/countriesNow/response"
 	"country-rest-api/util"
-	"io"
-	"log"
 	"net/http"
-	"time"
 )
 
 // RequestInfo sends an HTTP POST request to the Countries Now API to retrieve city information
 // for a specified country. It returns a slice of city names. If an error occurs during the request
 // or decoding, it logs the error and returns an empty slice.
+// country: The name of the country for which to retrieve city information.
+// r: The incoming HTTP request, used to derive the context.
+// Returns a slice of city names.
 func RequestInfo(country string, r *http.Request) []string {
+	resp := response.CityResponse{}
 
-	// Create a context with a timeout to ensure the request does not hang indefinitely
-	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
-	defer cancel()
-
-	cityResponse := response.CityResponse{}
-
-	// Encode the request body as JSON
-	jsonBody := util.EncodeJSONBody(request.PostRequestBody{Name: country})
-
-	// Create a new HTTP request with the specified context
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, constants.CountriesNowAPI+"countries/cities", jsonBody)
-	if err != nil {
-		log.Printf(constants.ErrorCreateRequest, err)
-		return make([]string, 0)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	// Send the HTTP request and get the response
-	client := &http.Client{}
-	resp, err2 := client.Do(req)
-	if err2 != nil {
-		log.Printf(constants.ErrorResponse, err2)
-		return make([]string, 0)
-	}
-	defer func(Body io.ReadCloser) {
-		err3 := Body.Close()
-		if err3 != nil {
-			log.Printf(constants.ErrorCloseBody, err3)
-		}
-	}(resp.Body)
-
-	// Read the response body
-	body, err3 := io.ReadAll(resp.Body)
-	if err3 != nil {
-		log.Printf(constants.ErrorReadBody, err3)
-		return make([]string, 0)
-	}
+	// Send the POST request to the Countries Now API
+	body := service.IssuePostRequest(constants.CountriesNowInfo, request.PostRequestBody{Name: country}, r)
 
 	// Decode the JSON response into the CityResponse struct
-	util.DecodeJSONBody(body, &cityResponse)
+	util.DecodeJSONBody(body, &resp)
 
-	return cityResponse.Data
+	return resp.Data
+}
+
+// RequestPopulation sends an HTTP POST request to the Countries Now API to retrieve population information
+// for a specified country. It returns a PopulationResponse struct with the decoded data. If an error occurs
+// during the request or decoding, it logs the error and returns an empty PopulationResponse struct.
+// country: The name of the country for which to retrieve population information.
+// r: The incoming HTTP request, used to derive the context.
+// Returns a PopulationResponse struct containing the population information.
+func RequestPopulation(country string, r *http.Request) response.PopulationResponse {
+	resp := response.PopulationResponse{}
+
+	// Send the POST request to the Countries Now API
+	body := service.IssuePostRequest(constants.CountriesNowPopulation, request.PostRequestBody{Name: country}, r)
+
+	// Decode the JSON response into the PopulationResponse struct
+	util.DecodeJSONBody(body, &resp)
+
+	return resp
 }

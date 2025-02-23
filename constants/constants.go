@@ -12,6 +12,8 @@ const (
 
 	// InfoFilter filters to only receive the necessary fields from the RESTCountriesAPI
 	InfoFilter = "?fields=name,continents,population,languages,borders,flags,capital"
+
+	CountryFilter = "?fields=name"
 )
 
 // Internal endpoints
@@ -44,6 +46,8 @@ const (
 	CountriesNowStatus = CountriesNowAPI + "countries/iso"
 
 	CountriesNowInfo = CountriesNowAPI + "countries/cities"
+
+	CountriesNowPopulation = CountriesNowAPI + "countries/population"
 
 	// RESTCountriesAPI is the endpoint for the REST Countries service.
 	RESTCountriesAPI = "http://129.241.150.113:8080/v3.1/"
