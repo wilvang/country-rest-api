@@ -9,6 +9,9 @@ Copy `.env.example` to `.env`. This allows you to update environment variables o
 
 ## Dependencies
 
+* go
+* github.com/joho/godotenv
+
 Two external REST web services is used to provide the data:
 * *CountriesNow API*
   * Endpoint: http://129.241.150.113:3500/api/v0.1/
