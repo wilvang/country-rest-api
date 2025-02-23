@@ -5,6 +5,8 @@ import (
 	"country-rest-api/external/api/service/countriesNow"
 	"country-rest-api/external/api/service/restCountries"
 	"country-rest-api/models"
+	"country-rest-api/util"
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -15,11 +17,15 @@ import (
 // limit: A string representing the year range in the format "fromYear-toYear" (e.g., "2010-2021").
 // r: The HTTP request object.
 // Returns a Population struct containing the mean population and historical population data.
-func RequestPopulationService(param string, limit string, r *http.Request) models.Population {
+func RequestPopulationService(param string, limit string, r *http.Request) (models.Population, error) {
 	url := constants.RESTCountriesAPI + "alpha/" + param + constants.CountryFilter
 
 	// Send request to REST Countries API and retrieve country information
 	nameResponse := restCountries.RequestInfo(url, r)
+	if util.IsEmpty(nameResponse) {
+		return models.Population{}, errors.New(constants.ErrorNotFound)
+	}
+
 	// Send request to Countries Now API and retrieve city information
 	history := countriesNow.RequestPopulation(nameResponse.Name.Common, r).Data.PopulationCounts
 
@@ -47,7 +53,7 @@ func RequestPopulationService(param string, limit string, r *http.Request) model
 		population.History = []models.PopulationData{}
 	}
 
-	return population
+	return population, nil
 }
 
 // trimHistory filters the population history based on the provided year range.

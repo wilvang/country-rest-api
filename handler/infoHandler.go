@@ -4,7 +4,6 @@ import (
 	"country-rest-api/constants"
 	"country-rest-api/internal/service/info"
 	"country-rest-api/internal/service/status"
-	"country-rest-api/util"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -36,6 +35,7 @@ func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 	// Extract path parameter
 	param := strings.TrimPrefix(r.URL.Path, constants.InfoPath)
 	if len(param) != 2 {
+		log.Printf(constants.ErrorPathParameter)
 		http.Error(w, constants.ErrorPathParameter, http.StatusBadRequest)
 		return
 	}
@@ -43,6 +43,7 @@ func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 	// Checks if the external APIs are running
 	serverStatus := status.RequestStatusService(r)
 	if serverStatus.CountriesNow != "200" || serverStatus.RestCountries != "200" {
+		log.Printf(constants.ErrorConnection)
 		http.Error(w, constants.ErrorConnection, http.StatusInternalServerError)
 		return
 	}
@@ -52,15 +53,18 @@ func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 	limit := queryParams.Get("limit")
 
 	// Call the service to get the country information
-	country := info.RequestInfoService(param, limit, r)
-	if util.IsEmpty(country) {
-		http.Error(w, "Error during fetching of data", http.StatusInternalServerError)
+	country, err := info.RequestInfoService(param, limit, r)
+	if err != nil {
+		log.Printf(constants.ErrorNotFound)
+		http.Error(w, constants.ErrorNotFound, http.StatusBadRequest)
 		return
+
 	}
 
 	// Pretty-print the JSON response
 	output, err := json.MarshalIndent(country, "", "  ")
 	if err != nil {
+		log.Printf(constants.ErrorPrettyPrinting)
 		http.Error(w, constants.ErrorPrettyPrinting, http.StatusInternalServerError)
 		return
 	}

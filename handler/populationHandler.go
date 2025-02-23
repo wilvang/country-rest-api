@@ -37,6 +37,7 @@ func handlePopulationRequest(w http.ResponseWriter, r *http.Request) {
 	// Extract path parameter
 	param := strings.TrimPrefix(r.URL.Path, constants.PopulationPath)
 	if len(param) != 2 {
+		log.Printf(constants.ErrorPathParameter)
 		http.Error(w, constants.ErrorPathParameter, http.StatusBadRequest)
 		return
 	}
@@ -44,6 +45,7 @@ func handlePopulationRequest(w http.ResponseWriter, r *http.Request) {
 	// Checks if the external APIs are running
 	serverStatus := status.RequestStatusService(r)
 	if serverStatus.CountriesNow != "200" || serverStatus.RestCountries != "200" {
+		log.Printf(constants.ErrorConnection)
 		http.Error(w, constants.ErrorConnection, http.StatusInternalServerError)
 		return
 	}
@@ -53,11 +55,17 @@ func handlePopulationRequest(w http.ResponseWriter, r *http.Request) {
 	limit := queryParams.Get("limit")
 
 	// Call the service to get the country information
-	populationInfo := population.RequestPopulationService(param, limit, r)
+	populationInfo, err := population.RequestPopulationService(param, limit, r)
+	if err != nil {
+		log.Printf(constants.ErrorNotFound)
+		http.Error(w, constants.ErrorNotFound, http.StatusBadRequest)
+		return
+	}
 
 	// Pretty-print the JSON response
-	output, err := json.MarshalIndent(populationInfo, "", "  ")
-	if err != nil {
+	output, err2 := json.MarshalIndent(populationInfo, "", "  ")
+	if err2 != nil {
+		log.Printf(constants.ErrorPrettyPrinting)
 		http.Error(w, constants.ErrorPrettyPrinting, http.StatusInternalServerError)
 		return
 	}
@@ -65,9 +73,9 @@ func handlePopulationRequest(w http.ResponseWriter, r *http.Request) {
 	// Set the content type and status code before writing the response body
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	_, err2 := w.Write(output)
-	if err2 != nil {
-		log.Printf(constants.ErrorWritingJSON+" %v", err2)
+	_, err3 := w.Write(output)
+	if err3 != nil {
+		log.Printf(constants.ErrorWritingJSON+" %v", err3)
 		http.Error(w, constants.ErrorWritingJSON, http.StatusInternalServerError)
 	}
 }

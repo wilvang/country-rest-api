@@ -34,6 +34,7 @@ func handleStatusRequest(w http.ResponseWriter, r *http.Request) {
 	// Pretty-print the JSON response
 	output, err := json.MarshalIndent(serverStatus, "", "  ")
 	if err != nil {
+		log.Printf(constants.ErrorPrettyPrinting)
 		http.Error(w, constants.ErrorPrettyPrinting, http.StatusInternalServerError)
 		return
 	}

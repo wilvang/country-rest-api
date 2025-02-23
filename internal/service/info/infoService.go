@@ -5,6 +5,8 @@ import (
 	"country-rest-api/external/api/service/countriesNow"
 	"country-rest-api/external/api/service/restCountries"
 	"country-rest-api/models"
+	"country-rest-api/util"
+	"errors"
 	"net/http"
 	"strconv"
 )
@@ -12,11 +14,15 @@ import (
 // RequestInfoService sends an HTTP GET request to the REST Countries API to retrieve information
 // about a country specified by the 'param' parameter. It returns an Info struct with the decoded
 // data or an error if the request or decoding fails.
-func RequestInfoService(param string, limit string, r *http.Request) models.Info {
+func RequestInfoService(param string, limit string, r *http.Request) (models.Info, error) {
 	url := constants.RESTCountriesAPI + "alpha/" + param + constants.InfoFilter
 
 	// Send request to REST Countries API and retrieve country information
 	countryResponse := restCountries.RequestInfo(url, r)
+	if util.IsEmpty(countryResponse) {
+		return models.Info{}, errors.New(constants.ErrorNotFound)
+	}
+
 	// Send request to Countries Now API and retrieve city information
 	cityResponse := countriesNow.RequestInfo(countryResponse.Name.Common, r)
 
@@ -39,5 +45,5 @@ func RequestInfoService(param string, limit string, r *http.Request) models.Info
 		info.Cities = cityResponse
 	}
 
-	return info
+	return info, nil
 }
