@@ -6,25 +6,22 @@ import (
 	"country-rest-api/external/api/service/restCountries"
 	"country-rest-api/models"
 	"country-rest-api/util"
-	"errors"
+	"log"
 	"net/http"
 	"strconv"
 )
 
 // RequestInfoService sends an HTTP GET request to the REST Countries API to retrieve information
 // about a country specified by the 'param' parameter. It returns an Info struct with the decoded
-// data or an error if the request or decoding fails.
-func RequestInfoService(param string, limit string, r *http.Request) (models.Info, error) {
+// data or a number associated with an error if the request or decoding fails.
+func RequestInfoService(param string, limit string, r *http.Request) (models.Info, int) {
 	url := constants.RESTCountriesAPI + "alpha/" + param + constants.InfoFilter
 
 	// Send request to REST Countries API and retrieve country information
 	countryResponse := restCountries.RequestInfo(url, r)
 	if util.IsEmpty(countryResponse) {
-		return models.Info{}, errors.New(constants.ErrorNotFound)
+		return models.Info{}, 1
 	}
-
-	// Send request to Countries Now API and retrieve city information
-	cityResponse := countriesNow.RequestInfo(countryResponse.Name.Common, r)
 
 	// Populate the Info struct with the retrieved data
 	info := models.Info{
@@ -35,7 +32,15 @@ func RequestInfoService(param string, limit string, r *http.Request) (models.Inf
 		Borders:    countryResponse.Borders,
 		Flag:       countryResponse.Flags.Png,
 		Capitals:   countryResponse.Capital,
-		Cities:     cityResponse[:10],
+		Cities:     nil,
+	}
+
+	// Send request to Countries Now API and retrieve city information
+	cityResponse := countriesNow.RequestInfo(countryResponse.Name.Common, r)
+	if util.IsEmpty(cityResponse) {
+		// If there is a response
+		log.Println(constants.ErrorCitiesNotFound)
+		return info, 2
 	}
 
 	// Adjust the number of cities based on the 'limit' query parameter
@@ -43,7 +48,9 @@ func RequestInfoService(param string, limit string, r *http.Request) (models.Inf
 		info.Cities = cityResponse[:lim]
 	} else if limit != "" && err == nil && lim < len(cityResponse) {
 		info.Cities = cityResponse
+	} else {
+		info.Cities = cityResponse[:10]
 	}
 
-	return info, nil
+	return info, 0
 }

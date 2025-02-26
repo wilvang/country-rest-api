@@ -14,5 +14,6 @@ const (
 	ErrorReadingHTML    = "error reading HTML file"
 	ErrorPathParameter  = "error: invalid path-parameter"
 	ErrorConnection     = "error: cannot connect to services"
-	ErrorNotFound       = "error: request not found in the database, invalid iso2 code"
+	ErrorNotFound       = "error: request not found in the database"
+	ErrorCitiesNotFound = "error: cities not found for the country"
 )

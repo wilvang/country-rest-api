@@ -54,16 +54,17 @@ func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 
 	// Call the service to get the country information
 	country, err := info.RequestInfoService(param, limit, r)
-	if err != nil {
-		log.Printf(constants.ErrorNotFound)
+	if err == 1 {
 		http.Error(w, constants.ErrorNotFound, http.StatusBadRequest)
 		return
-
+	} else if err == 2 {
+		http.Error(w, constants.ErrorCitiesNotFound, http.StatusInternalServerError)
+		return
 	}
 
 	// Pretty-print the JSON response
-	output, err := json.MarshalIndent(country, "", "  ")
-	if err != nil {
+	output, err2 := json.MarshalIndent(country, "", "  ")
+	if err2 != nil {
 		log.Printf(constants.ErrorPrettyPrinting)
 		http.Error(w, constants.ErrorPrettyPrinting, http.StatusInternalServerError)
 		return
@@ -72,8 +73,8 @@ func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 	// Set the content type and status code before writing the response body
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	_, err2 := w.Write(output)
-	if err2 != nil {
+	_, err3 := w.Write(output)
+	if err3 != nil {
 		log.Printf(constants.ErrorWritingJSON+" %v", err2)
 		http.Error(w, constants.ErrorWritingJSON, http.StatusInternalServerError)
 	}
