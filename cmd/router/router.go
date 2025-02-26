@@ -17,7 +17,7 @@ func StartServer() {
 	// Loads the .env file
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error loading .env file")
+		log.Println("Error loading .env file")
 	}
 
 	// Retrieves the port number from the environment variable "port"
