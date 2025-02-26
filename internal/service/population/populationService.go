@@ -27,28 +27,32 @@ func RequestPopulationService(param string, limit string, r *http.Request) (mode
 	}
 
 	// Send request to Countries Now API and retrieve city information
-	history := countriesNow.RequestPopulation(nameResponse.Name.Common, r).Data.PopulationCounts
+	populationHistory := countriesNow.RequestPopulation(nameResponse.Name.Common, r).Data.PopulationCounts
+	if util.IsEmpty(populationHistory) {
+		// If the response is empty, try a request with the official name
+		populationHistory = countriesNow.RequestPopulation(nameResponse.Name.Official, r).Data.PopulationCounts
+	}
 
 	// Apply year limit if provided
 	if limit != "" {
-		history = trimHistory(limit, history)
+		populationHistory = trimHistory(limit, populationHistory)
 	}
 
 	// Populate the Population struct with the retrieved data
 	population := models.Population{
 		Mean:    0,
-		History: history,
+		History: populationHistory,
 	}
 
 	// Calculate the mean population
 	sum := 0
-	for _, population := range history {
+	for _, population := range populationHistory {
 		sum += population.Count
 	}
 
-	// Populate the mean attribute if the history isn't empty
-	if len(history) != 0 {
-		population.Mean = sum / (len(history))
+	// Populate the mean attribute if the populationHistory isn't empty
+	if len(populationHistory) != 0 {
+		population.Mean = sum / (len(populationHistory))
 	} else {
 		population.History = []models.PopulationData{}
 	}
