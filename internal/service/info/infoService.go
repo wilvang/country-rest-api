@@ -41,7 +41,7 @@ func RequestInfoService(param string, limit string, r *http.Request) (models.Inf
 	// Adjust the number of cities based on the 'limit' query parameter
 	if lim, err := strconv.Atoi(limit); err == nil && lim >= 0 && lim <= len(cityResponse) {
 		info.Cities = cityResponse[:lim]
-	} else if limit != "" && lim < len(cityResponse) {
+	} else if limit != "" && err == nil && lim < len(cityResponse) {
 		info.Cities = cityResponse
 	}
 
