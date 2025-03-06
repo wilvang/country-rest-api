@@ -85,7 +85,7 @@ func handleInfoRequest(w http.ResponseWriter, r *http.Request) {
 // r: The HTTP request.
 func InfoPage(w http.ResponseWriter, r *http.Request) {
 	// Read the HTML file
-	htmlFile, err := os.ReadFile("frontend/info.html")
+	htmlFile, err := os.ReadFile("../frontend/info.html")
 	if err != nil {
 		log.Printf(constants.ErrorReadingHTML+" %v", err)
 		http.Error(w, constants.ErrorReadingHTML, http.StatusInternalServerError)

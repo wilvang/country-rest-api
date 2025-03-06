@@ -13,7 +13,7 @@ import (
 func StartPage(w http.ResponseWriter, r *http.Request) {
 
 	// Read the HTML file
-	htmlFile, err := os.ReadFile("frontend/index.html")
+	htmlFile, err := os.ReadFile("../frontend/index.html")
 	if err != nil {
 		log.Printf(constants.ErrorReadingHTML+" %v", err)
 		http.Error(w, constants.ErrorReadingHTML, http.StatusInternalServerError)

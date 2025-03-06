@@ -85,7 +85,7 @@ func handlePopulationRequest(w http.ResponseWriter, r *http.Request) {
 // r: The HTTP request.
 func PopulationPage(w http.ResponseWriter, r *http.Request) {
 	// Read the HTML file
-	htmlFile, err := os.ReadFile("frontend/population.html")
+	htmlFile, err := os.ReadFile("../frontend/population.html")
 	if err != nil {
 		log.Printf(constants.ErrorReadingHTML+" %v", err)
 		http.Error(w, constants.ErrorReadingHTML, http.StatusInternalServerError)
